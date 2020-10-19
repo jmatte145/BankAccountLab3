@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BankAccountLab3.Extensions;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace BankAccountLab3
         public double currentBal { get; set; }
         double depositTotal; public int depositNum { get; set; } 
         double withdrawTotal; public int withdrawNum { get; set; } 
-        double annualIntRate; double monthRate;  public double servCharge;
+        double annualIntRate; public double monthRate;  public double interest; public double servCharge;
         public Account(double sb, double annIntRate, double serviceChr)
         {
             startBal = sb;
@@ -35,8 +36,8 @@ namespace BankAccountLab3
 
         public void CalculateInterest()
         {
-            monthRate = (annualIntRate / 12);
-            monthRate = (currentBal * monthRate);
+            interest = (annualIntRate / 12);
+            monthRate = (currentBal * interest);
             currentBal += monthRate;
         }
 
@@ -44,12 +45,17 @@ namespace BankAccountLab3
         {
             currentBal -= servCharge;
             CalculateInterest();
+            StringBuilder str = new StringBuilder("Starting Balance: " + startBal.ToNAMoneyFormat(true));
+            str.Append("\nNumber of deposits: " + depositNum);
+            str.Append("\nNumber of withdrawals: " + withdrawNum);
+            str.Append("\nPercent Change: " + this.getPercentageChange());
+            str.Append("\nInterest: " + monthRate);
+            str.Append("\nService Charge: " + servCharge);
+            str.Append("\nCurrent Balance: " + currentBal.ToNAMoneyFormat(true));
+            // str.AppendFormat("\nCurrent Balance: {0, 0:C2}", currentBal);
+            // str.AppendFormat("\nCurrent Balance (Rounded): {0, 0:C2}", currentBal.ToNAMoneyFormat(true));
             depositNum = 0;
             withdrawNum = 0;
-            StringBuilder str = new StringBuilder("Starting Balance: " + startBal);
-            str.AppendFormat("\nCurrent Balance: {0, 0:C2}", currentBal);
-            str.Append("\nPercent Change: " + ((startBal * 100) / currentBal));
-            str.Append("\nInterest: " + monthRate);
             return str.ToString();
         }
     }

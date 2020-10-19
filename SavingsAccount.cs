@@ -15,7 +15,12 @@ namespace BankAccountLab3
         bool accStatus; 
         public void MakeWithdrawal(double amount)
         {
-            if(accStatus == false)
+            if(base.currentBal - amount < 25 && base.currentBal - amount < 0)
+            {
+                Console.WriteLine("Withdrawal not made.");
+                accStatus = false;
+            }
+            if (accStatus == false)
             {
                 Console.WriteLine("Your account is not active.");
             }
@@ -28,7 +33,7 @@ namespace BankAccountLab3
         public void MakeDeposit(double amount)
         {
                 base.MakeDeposit(amount);
-                if (base.currentBal > 25)
+                if (base.currentBal + amount > 25)
                 {
                     accStatus = true;
                 }
@@ -39,6 +44,14 @@ namespace BankAccountLab3
             int charge = base.withdrawNum - 4;
             base.servCharge += charge;
             String str = base.CloseAndReport();
+            if (accStatus == true)
+            {
+                str += "\nAccount Status: Active";
+            }
+            else if(accStatus == false)
+            {
+                str += "\nAccount Status: Inactive";
+            }
             return str;
         }
     }
